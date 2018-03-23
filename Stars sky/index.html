@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stars Sky</title>
+    <style>
+    
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgb(0,0,7);
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <canvas id="stars"></canvas>
+    
+    <script>
+    
+        ((star) => {
+            
+            let $ = star.getContext('2d'),
+                w = star.width = window.innerWidth,
+                h = star.height = window.innerHeight,
+                random = n => Math.random() * n,
+                stars = new Array(777).fill().map(() => {
+                   return {
+                       radius: random(w),
+                       speed: random(0.01),
+                       angle: random(Math.PI * 2) 
+                   } 
+                });
+            
+            function loop() {
+                $.fillStyle = 'rgba(0,0,7,.1)';
+                $.fillRect(0,0,w,h);
+                
+                stars.forEach(el => {
+                    el.angle += el.speed;
+                    $.beginPath();
+                    $.arc(Math.cos(el.angle) * el.radius + w/2, Math.sin(el.angle) * el.radius + h/2, 1, 0, Math.PI * 2);
+                    $.closePath();
+                    $.fillStyle = 'white';
+                    $.fill();
+                })
+                
+                requestAnimationFrame(loop);
+            }
+            
+            requestAnimationFrame(loop);
+            
+            window.addEventListener('resize', () => {
+                w = star.width = window.innerWidth;
+                h = star.height = window.innerHeight;
+            })
+            
+        })(stars)
+    
+    </script>
+</body>
+</html>

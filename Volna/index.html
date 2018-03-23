@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Volna</title>
+    <style>
+        body {
+            margin: 0;
+            background: #222;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    
+    <canvas id="volna"></canvas>
+    
+    <script>
+    
+        ((volna) => {
+            // w/h - ширина и высота канваса. Определяем по ширине и высоте экрана
+            // opts - переменные, которые будем менять для того что бы можно будет увидеть другую картинку:
+            //// maxHeight - максимальная высота блока в которой будет идти полна
+            //// radius - радиус шариков
+            //// distance - дистанция между ними
+            //// span - кусок волны которая видна
+            //// amound - количество шариков
+            
+            // arr - массив который будет сохранять все точки:
+            //// .fill() - заполняем массив Undefined (заливка)
+            //// .map((el, index)) - берем индекс undefined и будем отдавать новые объекты 1: угол, 2: x - горизонтальная позиция
+            //// width - общая длина волны
+            
+            let $ = volna.getContext('2d'),
+                w = volna.width = window.innerWidth,
+                h = volna.height = window.innerHeight,
+                opts = {
+                    maxHeight: 77,
+                    radius: 7,
+                    distance: 10,
+                    span: Math.PI,
+                    amound: 17,
+                    speed: Math.PI / 180 * 2
+                },
+                arr = new Array(opts.amound + 1).fill().map((el, index) => {
+                    return {
+                        angle: opts.span / opts.amound * index ,
+                        x: (opts.distance + opts.radius * 2) * index
+                    }
+                }),
+                width = (opts.distance + opts.radius * 2) * opts.amound;
+            
+            console.log(volna);
+            
+            function draw() {
+                $.fillStyle = '#222';
+                $.fillRect(0,0,w,h);
+                console.log(arr);
+                
+                // beginPath() - начало рисования линии
+                // arc() - рисует дугу с центром в заданной точке
+                //// контекст.arc(x, y, радиус, начальный угол, конечный угол, [направление = false]);
+                //// h/2 - центрируем по вередине по вертикали
+                //// + w/2 - width/2 - выравниваем по горизонтали
+                // closePath() - закрываем дугу
+                // fillStyle() - зарисовываем ее
+                // el.angle * 20 - число скорость изменения цветов
+                arr.forEach((el, index) => {
+                    el.angle += opts.speed;
+                    $.beginPath();
+                    $.arc(el.x + w/2 - width/2 , Math.sin(el.angle) * opts.maxHeight + h/2, opts.radius, 0, Math.PI * 2);
+                    $.closePath();
+                    $.fillStyle = 'hsl('+ el.angle * 20 +', 50%, 50%)';
+                    $.fill();
+                })
+                
+                // запуск анимации
+                requestAnimationFrame(draw);
+            }
+            draw();
+            
+            window.addEventListener('resize', () => {
+                w = volna.width = window.innerWidth;
+                h = volna.height = window.innerHeight;
+            })
+            
+        })(volna)
+    
+    </script>
+</body>
+</html>
